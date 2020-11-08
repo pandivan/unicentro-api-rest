@@ -1,15 +1,15 @@
-/*
+
 CREATE SCHEMA referencial;
 CREATE SCHEMA dimension;
 CREATE SCHEMA hechos;
 CREATE SCHEMA sisbol;
 
-
+/*
 drop SCHEMA referencial;
 drop SCHEMA dimension;
 drop SCHEMA hechos; 
 drop SCHEMA sisbol; 
-*/
+
 
 
 
@@ -21,7 +21,7 @@ drop table dimension.barrio;
 drop table dimension.estado;
 drop table dimension.geografia;
 
-
+*/
 
 
 
@@ -51,7 +51,7 @@ primary key (id_geografia)
 
 
 
-/*
+
 create table dimension.tiempo
 (
 id_tiempo integer not null,
@@ -75,7 +75,7 @@ fecha_inicio_semana date not null,
 fecha_fin_semana date not null,
 primary key (id_tiempo)
 );
-*/
+
 
 
 
@@ -179,4 +179,45 @@ commit;
 commit;
 
 
+truncate table hechos.aforo ;
 
+
+
+
+
+
+
+select * 
+--delete 
+from hechos.aforo 
+--where id_aforo >= 220633
+order by 1 desc
+;
+
+delete 
+from hechos.aforo 
+where id_aforo >= 220633
+;
+
+select count(1), max(id_aforo), min(id_aforo), max(fecha_ingreso), min(fecha_ingreso) from hechos.aforo;
+
+
+
+select ingreso, salida, (ingreso - salida) aforo, (ingreso + salida) total
+from 
+(
+	select 
+	(
+		select count(1)
+		from hechos.aforo
+		where fecha_ingreso is not null and fecha_ingreso >= CURRENT_DATE
+	) ingreso,
+	(
+		select count(1)
+		from hechos.aforo
+		where fecha_salida is not null and fecha_salida >= CURRENT_DATE
+	) salida
+) tabla
+;
+
+--#
