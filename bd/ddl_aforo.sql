@@ -13,16 +13,15 @@ SET timezone TO 'America/Bogota';
 
 
 select * 
---delete 
 from hechos.aforo 
---where id_aforo >= 220633
+where id_aforo >= 1678083
 order by 1 desc
 ;
 
-delete 
-from hechos.aforo 
-where id_aforo >= 220633
-;
+--delete 
+--from hechos.aforo 
+--where id_aforo >= 1678017
+--;
 
 select count(1), max(id_aforo), min(id_aforo), max(fecha_ingreso), min(fecha_ingreso) from hechos.aforo;
 
@@ -45,7 +44,14 @@ from
 ) tabla
 ;
 
+select count(1)
+from hechos.aforo
+where fecha_ingreso is not null and fecha_ingreso >= CURRENT_DATE;
 
+
+CREATE INDEX aforo_fecha_ingreso_idx ON hechos.aforo (fecha_ingreso);
+
+CREATE INDEX aforo_fecha_salida_idx ON hechos.aforo (fecha_salida);
 
 
 
