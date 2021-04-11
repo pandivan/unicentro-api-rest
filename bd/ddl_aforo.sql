@@ -56,12 +56,21 @@ CREATE INDEX aforo_fecha_salida_idx ON hechos.aforo (fecha_salida);
 
 
 
+
+
+
+
 /************************************************************************************
  * CAMPAÑAS QLIK
  ************************************************************************************/
 
 
 select * from sisbol.campania;
+
+11 "Entrega de Bolsos Reciclados Disponibilidad hasta agotar existencias"
+13 Raspa y Gana
+12 ENTREGA DE BOLSOS ECOLÓGICOS POR COMPRAS
+
 
 
 --DIMENSION CAMPAÑA
@@ -163,8 +172,10 @@ inner join sisbol.cliente c on c.codi_cli = b.codi_cli
 inner join sisbol.barrio ba on ba.id_barrio = c.id_barrio 
 inner join sisbol.tipo t on t.codi_tip = hc.loca_com 
 inner join sisbol.vw_categoria cate on cate.codi_tip = t.valo_tip 
-where cam.id_camp in (9)
+where cam.id_camp in (7)
 --and c.codi_cli in ('57451','48592')
+and date_trunc('day', hc.fech_com) between TO_DATE('20191201','YYYYMMDD') and TO_DATE('20191201','YYYYMMDD')
+and cate.codi_tip = '05017'
 order by 1
 ;
 
@@ -191,7 +202,7 @@ inner join sisbol.cliente c on c.codi_cli = b.codi_cli
 inner join sisbol.barrio ba on ba.id_barrio = c.id_barrio 
 inner join sisbol.tipo t on t.codi_tip = hc.loca_com 
 inner join sisbol.vw_categoria cate on cate.codi_tip = t.valo_tip 
-where cam.id_camp = 9
+where cam.id_camp = 8
 and c.codi_cli not in 
 (
 select distinct c.codi_cli 
@@ -202,34 +213,42 @@ inner join sisbol.cliente c on c.codi_cli = b.codi_cli
 inner join sisbol.barrio ba on ba.id_barrio = c.id_barrio 
 inner join sisbol.tipo t on t.codi_tip = hc.loca_com 
 inner join sisbol.vw_categoria cate on cate.codi_tip = t.valo_tip 
-where cam.id_camp in (8)
+where cam.id_camp in (7)
 )
 ;
 
 
 
 --CLIENTES PERDIDOS
-select COUNT(distinct c.codi_cli)
+select distinct c.nrod_cli, c.nomb_cli, catee.codi_tip, catee.desc_tip, cam.nombre_camp --COUNT(distinct c.codi_cli)
 FROM sisbol.compra hc
 inner join sisbol.boleta b on b.codi_bol = hc.codi_bol and b.anul_bol <> 'S' 
 inner join sisbol.campania cam on cam.id_camp = b.id_camp 
 inner join sisbol.cliente c on c.codi_cli = b.codi_cli
 inner join sisbol.barrio ba on ba.id_barrio = c.id_barrio 
 inner join sisbol.tipo t on t.codi_tip = hc.loca_com 
-inner join sisbol.vw_categoria cate on cate.codi_tip = t.valo_tip 
-where cam.id_camp in (8)
+inner join sisbol.vw_categoria catee on catee.codi_tip = t.valo_tip 
+where 1=1
+and cam.id_camp = 7
+and catee.codi_tip = '05019'
 and c.codi_cli not in 
 (
-select distinct c.codi_cli 
-FROM sisbol.compra hc
-inner join sisbol.boleta b on b.codi_bol = hc.codi_bol and b.anul_bol <> 'S' 
-inner join sisbol.campania cam on cam.id_camp = b.id_camp 
-inner join sisbol.cliente c on c.codi_cli = b.codi_cli
-inner join sisbol.barrio ba on ba.id_barrio = c.id_barrio 
-inner join sisbol.tipo t on t.codi_tip = hc.loca_com 
-inner join sisbol.vw_categoria cate on cate.codi_tip = t.valo_tip 
-where cam.id_camp = 9
+	select distinct c.codi_cli 
+	FROM sisbol.compra hc
+	inner join sisbol.boleta b on b.codi_bol = hc.codi_bol and b.anul_bol <> 'S' 
+	inner join sisbol.campania cam on cam.id_camp = b.id_camp 
+	inner join sisbol.cliente c on c.codi_cli = b.codi_cli
+	inner join sisbol.barrio ba on ba.id_barrio = c.id_barrio 
+	inner join sisbol.tipo t on t.codi_tip = hc.loca_com 
+	inner join sisbol.vw_categoria cate on cate.codi_tip = t.valo_tip 
+	where 1=1
+	and cam.id_camp = 8
+	--and date_trunc('day', hc.fech_com) between TO_DATE('20191201','YYYYMMDD') and TO_DATE('20191201','YYYYMMDD')
+	--and cate.codi_tip = '05017'
+	--and c.nrod_cli in ('13005784')
 )
+--and date_trunc('day', hc.fech_com) between TO_DATE('20191201','YYYYMMDD') and TO_DATE('20191201','YYYYMMDD')
+--and c.nrod_cli in ('13005784')
 ;
 
 
@@ -242,7 +261,8 @@ inner join sisbol.cliente c on c.codi_cli = b.codi_cli
 inner join sisbol.barrio ba on ba.id_barrio = c.id_barrio 
 inner join sisbol.tipo t on t.codi_tip = hc.loca_com 
 inner join sisbol.vw_categoria cate on cate.codi_tip = t.valo_tip 
-where cam.id_camp in (6,7)
+where 1=1
+and cam.id_camp in (7)
 and c.codi_cli in 
 (
 select distinct c.codi_cli 
@@ -253,13 +273,35 @@ inner join sisbol.cliente c on c.codi_cli = b.codi_cli
 inner join sisbol.barrio ba on ba.id_barrio = c.id_barrio 
 inner join sisbol.tipo t on t.codi_tip = hc.loca_com 
 inner join sisbol.vw_categoria cate on cate.codi_tip = t.valo_tip 
-where cam.id_camp = 8
+where 1=1
+and cam.id_camp = 8
+--and c.nrod_cli in ('30712024','13005784')
 )
+--and c.nrod_cli in ('30712024','13005784')
 ;
 
 
 
-select hc.* FROM sisbol.compra hc where hc.codi_bol = '12693';
+select hc.* FROM sisbol.compra hc 
+where 1=1
+--and hc.codi_bol = '12693'
+and date_trunc('day', hc.fech_com) between TO_DATE('20201001','YYYYMMDD') and TO_DATE('20201031','YYYYMMDD')
+;
+
+select * -- sum(case p.total WHEN 0 THEN p.total_convenio ELSE p.total end) as valor
+from hechos.parking p
+where date_trunc('day', p.fecha_factura) between TO_DATE('20201001','YYYYMMDD') and TO_DATE('20201001','YYYYMMDD')
+;
+
+
+
+
+select *
+FROM hechos.aforo 
+where date_trunc('day', fecha_ingreso) between TO_DATE('20201001','YYYYMMDD') and TO_DATE('20201001','YYYYMMDD')
+;
+
+
 
 select * FROM sisbol.boleta where codi_bol = '12693';
 
@@ -326,13 +368,13 @@ select
 from hechos.parking p 
 where 1=1
 --and p.id_billing = 1598974311448
-and p.total > 2800
+--and p.total > 2800
 --and p.placa2 is null 
 --and p.tarifa like '%Perno%'
 --group by id_billing having count(1) > 1;
 
 ;
-116
+
 
 select 
       p.id_billing as cantidad, 
@@ -369,5 +411,17 @@ fecha_factura = '2020-12-01 00:30:00'
 --fecha_factura = (current_date+1)
 where id_billing in (1010)
 ;
+
+
+SELECT
+id_aforo as personas,
+fecha_ingreso,
+fecha_salida
+FROM hechos.aforo 
+where id_aforo = 11354
+;
+
+
+
 
 
